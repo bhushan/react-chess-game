@@ -1,0 +1,14 @@
+.tile {
+    border: 1px solid lightblue;
+    aspect-ratio: 1;
+    display: grid;
+    place-content: center;
+}
+
+.white-tile {
+    background-color: #eeeed2;
+}
+
+.black-tile {
+    background-color: #769656;
+}
