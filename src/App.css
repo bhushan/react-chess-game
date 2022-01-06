@@ -2,3 +2,7 @@
     max-width: 640px;
     margin: auto;
 }
+
+body {
+    background: #444444;
+}
