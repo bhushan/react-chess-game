@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, MouseEvent } from 'react';
 import Tile from 'components/Tile';
 
 import type { Piece, Position } from 'components/Board/types';
@@ -51,15 +51,19 @@ initialPiecePositions.push({ x: 7, y: 7, image: WhiteRook });
 const Board = () => {
   const [ piecePositions, setPiecePositions ] = useState<Piece[]>(initialPiecePositions);
 
+  const boardRef = useRef<HTMLDivElement>(null);
+
+  let activePiece: HTMLDivElement | null = null;
+
   // reversed yAxisPositions to match the actual board in real life
   let yAxisPositionsReversed = yAxisPositions.reverse();
 
-  useEffect(() => {
-    setTimeout(() => {
-      movePiece({ x: 0, y: 1 }, { x: 0, y: 2 }, BlackPawn);
-      console.log('moved black pawn from (0, 1) to (0, 2)');
-    }, 3000);
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     movePiece({ x: 0, y: 1 }, { x: 0, y: 2 }, BlackPawn);
+  //     console.log('moved black pawn from (0, 1) to (0, 2)');
+  //   }, 3000);
+  // }, [])
 
   const movePiece = (from: Position, to: Position, image: string) => {
     setPiecePositions(old => {
@@ -71,8 +75,49 @@ const Board = () => {
     });
   }
 
+  const grabPiece = (e: MouseEvent) => {
+    const element = e.target as HTMLDivElement;
+    if (element.classList.contains('piece')) {
+      activePiece = element;
+    }
+  }
+
+  const movePieceWithMouse = (e: MouseEvent) => {
+    if (!activePiece || !boardRef.current) {
+      return
+    }
+
+    const clientX = e.clientX - 30;
+    const clientY = e.clientY - 30;
+
+    const minX = boardRef.current.offsetLeft;
+    const minY = boardRef.current.offsetTop;
+
+    const maxX = boardRef.current.offsetLeft + boardRef.current.clientWidth;
+    const maxY = boardRef.current.offsetTop + boardRef.current.clientHeight;
+
+    activePiece.style.position = 'absolute';
+
+    activePiece.style.left = clientX < minX ? `${minX}px` : (clientX > maxX ? `${maxX}px` : `${clientX}px`);
+    activePiece.style.top = clientY < minY ? `${minY}px` : (clientY > maxX ? `${maxY}px` : `${clientY}px`);
+  }
+
+  const dropPiece = (e: MouseEvent) => {
+    if (activePiece) {
+      console.log('dropped')
+      activePiece = null;
+    }
+  }
+
   return (
-    <div className="board">
+    <div
+      onMouseDown={e => grabPiece(e)}
+      onMouseMove={e => movePieceWithMouse(e)}
+      onMouseUp={e => dropPiece(e)}
+      ref={boardRef}
+      className="board"
+      style={{ marginTop: '200px', marginBottom: '200px' }}
+    >
       {
         yAxisPositionsReversed.map((yAxisPosition: string) => {
           return xAxisPositions.map((xAxisPosition: string) => {

@@ -12,3 +12,17 @@
 .black-tile {
     background-color: #769656;
 }
+
+.piece {
+    width: 60px;
+    height: 60px;
+    /*background-repeat: no-repeat;*/
+}
+
+.piece:hover {
+    cursor: grab;
+}
+
+.piece:active {
+    cursor: grabbing;
+}

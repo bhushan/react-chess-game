@@ -9,8 +9,13 @@ const Tile: FC<TilePropsInterface> = ({ xAxisPosition, yAxisPosition, image }) =
   const classes = number % 2 === 0 ? "tile white-tile" : "tile black-tile";
 
   return <div className={classes}>
-    {image &&
-    <div style={{ backgroundImage: `url(${image})`, width: '60px', height: '60px', backgroundRepeat: 'no-repeat' }} />}
+    {
+      image &&
+      <div
+        className="piece"
+        style={{ backgroundImage: `url(${image})` }}
+      />
+    }
   </div>
 }
 
