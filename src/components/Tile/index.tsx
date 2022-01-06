@@ -1,15 +1,17 @@
 import { FC } from 'react';
-import "components/Tile/Tile.css";
-import { xAxisPositions, yAxisPositions } from 'constants/constants';
+import { TilePropsInterface } from 'components/Tile/types';
 
-const Tile: FC<{ xAxisPosition: string, yAxisPosition: string }> = ({ xAxisPosition, yAxisPosition }) => {
-  const xPosition = xAxisPositions.findIndex(position => position === xAxisPosition);
-  const yPosition = yAxisPositions.findIndex(position => position === yAxisPosition);
-  const number = xPosition + yPosition + 2;
+import "components/Tile/Tile.css";
+
+const Tile: FC<TilePropsInterface> = ({ xAxisPosition, yAxisPosition, image }) => {
+  const number = xAxisPosition + yAxisPosition + 2;
 
   const classes = number % 2 === 0 ? "tile white-tile" : "tile black-tile";
 
-  return <div className={classes}>{xAxisPosition} - {yAxisPosition}</div>
+  return <div className={classes}>
+    {image &&
+    <div style={{ backgroundImage: `url(${image})`, width: '60px', height: '60px', backgroundRepeat: 'no-repeat' }} />}
+  </div>
 }
 
 export default Tile;
