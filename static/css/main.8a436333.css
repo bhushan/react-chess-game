@@ -1,0 +1,2 @@
+.tile{aspect-ratio:1;border:1px solid #add8e6;display:grid;place-content:center}.white-tile{background-color:#eeeed2}.black-tile{background-color:#769656}.board{border:1px solid #ccc;display:grid;grid-template-columns:repeat(8,80px);place-content:center}.container{margin:auto;max-width:640px}body{background:#444}
+/*# sourceMappingURL=main.8a436333.css.map*/
