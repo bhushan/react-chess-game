@@ -1,5 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Tile from 'components/Tile';
+
+import type { Piece, Position } from 'components/Board/types';
+
+import { getDeepCopy } from 'helper/utils';
 
 import 'components/Board/Board.css';
 
@@ -18,12 +22,6 @@ import WhiteRook from "assets/images/rook_w.png";
 import WhiteBishop from "assets/images/bishop_w.png";
 import WhiteKnight from "assets/images/knight_w.png";
 import WhitePawn from "assets/images/pawn_w.png";
-
-interface Piece {
-  x: number;
-  y: number;
-  image: string;
-}
 
 const initialPiecePositions: Piece[] = [];
 
@@ -55,6 +53,23 @@ const Board = () => {
 
   // reversed yAxisPositions to match the actual board in real life
   let yAxisPositionsReversed = yAxisPositions.reverse();
+
+  useEffect(() => {
+    setTimeout(() => {
+      movePiece({ x: 0, y: 1 }, { x: 0, y: 2 }, BlackPawn);
+      console.log('moved black pawn from (0, 1) to (0, 2)');
+    }, 3000);
+  }, [])
+
+  const movePiece = (from: Position, to: Position, image: string) => {
+    setPiecePositions(old => {
+      const deepCopy = getDeepCopy(old)
+      const index = deepCopy.findIndex((piece: Piece) => piece.x === from.x && piece.y === from.y)
+      deepCopy.splice(index, 1, { x: to.x, y: to.y, image: image });
+
+      return [ ...deepCopy ];
+    });
+  }
 
   return (
     <div className="board">
