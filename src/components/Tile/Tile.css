@@ -24,3 +24,7 @@
 .piece:active {
     cursor: grabbing;
 }
+
+.tile:hover {
+    border: 4px solid #ffec3d;
+}
