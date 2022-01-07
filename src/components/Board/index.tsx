@@ -23,30 +23,36 @@ import WhiteBishop from "assets/images/bishop_w.png";
 import WhiteKnight from "assets/images/knight_w.png";
 import WhitePawn from "assets/images/pawn_w.png";
 
-const initialPiecePositions: Piece[] = [];
+let initialPiecePositions: Piece[] = [];
 
-[ 0, 1, 2, 3, 4, 5, 6, 7 ].forEach(x => {
-  initialPiecePositions.push({ x, y: 1, image: BlackPawn });
-  initialPiecePositions.push({ x, y: 6, image: WhitePawn });
-});
+const previousPiecePositions = localStorage.getItem('piecePositions')
 
-initialPiecePositions.push({ x: 0, y: 0, image: BlackRook });
-initialPiecePositions.push({ x: 1, y: 0, image: BlackKnight });
-initialPiecePositions.push({ x: 2, y: 0, image: BlackBishop });
-initialPiecePositions.push({ x: 3, y: 0, image: BlackQueen });
-initialPiecePositions.push({ x: 4, y: 0, image: BlackKing });
-initialPiecePositions.push({ x: 5, y: 0, image: BlackBishop });
-initialPiecePositions.push({ x: 6, y: 0, image: BlackKnight });
-initialPiecePositions.push({ x: 7, y: 0, image: BlackRook });
+if (previousPiecePositions) {
+  initialPiecePositions = JSON.parse(previousPiecePositions);
+} else {
+  [ 0, 1, 2, 3, 4, 5, 6, 7 ].forEach(x => {
+    initialPiecePositions.push({ x, y: 1, image: BlackPawn });
+    initialPiecePositions.push({ x, y: 6, image: WhitePawn });
+  });
 
-initialPiecePositions.push({ x: 0, y: 7, image: WhiteRook });
-initialPiecePositions.push({ x: 1, y: 7, image: WhiteKnight });
-initialPiecePositions.push({ x: 2, y: 7, image: WhiteBishop });
-initialPiecePositions.push({ x: 3, y: 7, image: WhiteQueen });
-initialPiecePositions.push({ x: 4, y: 7, image: WhiteKing });
-initialPiecePositions.push({ x: 5, y: 7, image: WhiteBishop });
-initialPiecePositions.push({ x: 6, y: 7, image: WhiteKnight });
-initialPiecePositions.push({ x: 7, y: 7, image: WhiteRook });
+  initialPiecePositions.push({ x: 0, y: 0, image: BlackRook });
+  initialPiecePositions.push({ x: 1, y: 0, image: BlackKnight });
+  initialPiecePositions.push({ x: 2, y: 0, image: BlackBishop });
+  initialPiecePositions.push({ x: 3, y: 0, image: BlackQueen });
+  initialPiecePositions.push({ x: 4, y: 0, image: BlackKing });
+  initialPiecePositions.push({ x: 5, y: 0, image: BlackBishop });
+  initialPiecePositions.push({ x: 6, y: 0, image: BlackKnight });
+  initialPiecePositions.push({ x: 7, y: 0, image: BlackRook });
+
+  initialPiecePositions.push({ x: 0, y: 7, image: WhiteRook });
+  initialPiecePositions.push({ x: 1, y: 7, image: WhiteKnight });
+  initialPiecePositions.push({ x: 2, y: 7, image: WhiteBishop });
+  initialPiecePositions.push({ x: 3, y: 7, image: WhiteQueen });
+  initialPiecePositions.push({ x: 4, y: 7, image: WhiteKing });
+  initialPiecePositions.push({ x: 5, y: 7, image: WhiteBishop });
+  initialPiecePositions.push({ x: 6, y: 7, image: WhiteKnight });
+  initialPiecePositions.push({ x: 7, y: 7, image: WhiteRook });
+}
 
 const Board = () => {
   const [ piecePositions, setPiecePositions ] = useState<Piece[]>(initialPiecePositions);
@@ -144,6 +150,8 @@ const Board = () => {
         // empty tile so move the piece directly
         state.splice(fromIndex, 1, { x: toX, y: toY, image: fromImage });
 
+        localStorage.setItem('piecePositions', JSON.stringify(state));
+
         return [ ...state ];
       }
 
@@ -156,6 +164,8 @@ const Board = () => {
 
       // push new piece to the end of the array with the new position
       state.push({ x: toX, y: toY, image: fromImage });
+
+      localStorage.setItem('piecePositions', JSON.stringify(state));
 
       return [ ...state ];
     });
