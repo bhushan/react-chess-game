@@ -1,8 +1,19 @@
-.container {
-    max-width: 640px;
-    margin: auto;
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
     background: #444444;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }

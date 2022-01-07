@@ -1,5 +1,4 @@
 .tile {
-    border: 1px solid lightblue;
     aspect-ratio: 1;
     display: grid;
     place-content: center;
@@ -16,7 +15,6 @@
 .piece {
     width: 60px;
     height: 60px;
-    /*background-repeat: no-repeat;*/
 }
 
 .piece:hover {

@@ -87,19 +87,38 @@ const Board = () => {
       return
     }
 
+    // - 30 because the piece image is 60px so it centers on the piece cursor
     const clientX = e.clientX - 30;
     const clientY = e.clientY - 30;
 
     const minX = boardRef.current.offsetLeft;
     const minY = boardRef.current.offsetTop;
 
-    const maxX = boardRef.current.offsetLeft + boardRef.current.clientWidth;
-    const maxY = boardRef.current.offsetTop + boardRef.current.clientHeight;
+    // some how diff is 50 with clientX and actual maxX, hence -50
+    const maxX = boardRef.current.offsetLeft + boardRef.current.clientWidth - 50;
+    const maxY = boardRef.current.offsetTop + boardRef.current.clientHeight - 50;
 
     activePiece.style.position = 'absolute';
 
-    activePiece.style.left = clientX < minX ? `${minX}px` : (clientX > maxX ? `${maxX}px` : `${clientX}px`);
-    activePiece.style.top = clientY < minY ? `${minY}px` : (clientY > maxX ? `${maxY}px` : `${clientY}px`);
+    if (clientX < minX) {
+      // out side of the board on left side so use minX
+      activePiece.style.left = `${minX}px`;
+    } else if (clientX > maxX) {
+      // out side of the board on right side so use maxX
+      activePiece.style.left = `${maxX}px`;
+    } else {
+      activePiece.style.left = `${clientX}px`;
+    }
+
+    if (clientY < minY) {
+      // out side of the board on top side so use minY
+      activePiece.style.top = `${minY}px`;
+    } else if (clientY > maxY) {
+      // out side of the board on bottom side so use maxY
+      activePiece.style.top = `${maxY}px`;
+    } else {
+      activePiece.style.top = `${clientY}px`;
+    }
   }
 
   const dropPiece = (e: MouseEvent) => {
@@ -116,7 +135,6 @@ const Board = () => {
       onMouseUp={e => dropPiece(e)}
       ref={boardRef}
       className="board"
-      style={{ marginTop: '200px', marginBottom: '200px' }}
     >
       {
         yAxisPositionsReversed.map((yAxisPosition: string) => {
