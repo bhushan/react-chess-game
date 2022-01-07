@@ -5,3 +5,8 @@
     max-width: 640px;
     max-height: 640px;
 }
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}

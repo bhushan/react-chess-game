@@ -23,39 +23,36 @@ import WhiteBishop from "assets/images/bishop_w.png";
 import WhiteKnight from "assets/images/knight_w.png";
 import WhitePawn from "assets/images/pawn_w.png";
 
-let initialPiecePositions: Piece[] = [];
+const initialPiecePositions: Piece[] = [];
 
-const previousPiecePositions = localStorage.getItem('piecePositions')
+[ 0, 1, 2, 3, 4, 5, 6, 7 ].forEach(x => {
+  initialPiecePositions.push({ x, y: 1, image: BlackPawn });
+  initialPiecePositions.push({ x, y: 6, image: WhitePawn });
+});
 
-if (previousPiecePositions) {
-  initialPiecePositions = JSON.parse(previousPiecePositions);
-} else {
-  [ 0, 1, 2, 3, 4, 5, 6, 7 ].forEach(x => {
-    initialPiecePositions.push({ x, y: 1, image: BlackPawn });
-    initialPiecePositions.push({ x, y: 6, image: WhitePawn });
-  });
+initialPiecePositions.push({ x: 0, y: 0, image: BlackRook });
+initialPiecePositions.push({ x: 1, y: 0, image: BlackKnight });
+initialPiecePositions.push({ x: 2, y: 0, image: BlackBishop });
+initialPiecePositions.push({ x: 3, y: 0, image: BlackQueen });
+initialPiecePositions.push({ x: 4, y: 0, image: BlackKing });
+initialPiecePositions.push({ x: 5, y: 0, image: BlackBishop });
+initialPiecePositions.push({ x: 6, y: 0, image: BlackKnight });
+initialPiecePositions.push({ x: 7, y: 0, image: BlackRook });
 
-  initialPiecePositions.push({ x: 0, y: 0, image: BlackRook });
-  initialPiecePositions.push({ x: 1, y: 0, image: BlackKnight });
-  initialPiecePositions.push({ x: 2, y: 0, image: BlackBishop });
-  initialPiecePositions.push({ x: 3, y: 0, image: BlackQueen });
-  initialPiecePositions.push({ x: 4, y: 0, image: BlackKing });
-  initialPiecePositions.push({ x: 5, y: 0, image: BlackBishop });
-  initialPiecePositions.push({ x: 6, y: 0, image: BlackKnight });
-  initialPiecePositions.push({ x: 7, y: 0, image: BlackRook });
-
-  initialPiecePositions.push({ x: 0, y: 7, image: WhiteRook });
-  initialPiecePositions.push({ x: 1, y: 7, image: WhiteKnight });
-  initialPiecePositions.push({ x: 2, y: 7, image: WhiteBishop });
-  initialPiecePositions.push({ x: 3, y: 7, image: WhiteQueen });
-  initialPiecePositions.push({ x: 4, y: 7, image: WhiteKing });
-  initialPiecePositions.push({ x: 5, y: 7, image: WhiteBishop });
-  initialPiecePositions.push({ x: 6, y: 7, image: WhiteKnight });
-  initialPiecePositions.push({ x: 7, y: 7, image: WhiteRook });
-}
+initialPiecePositions.push({ x: 0, y: 7, image: WhiteRook });
+initialPiecePositions.push({ x: 1, y: 7, image: WhiteKnight });
+initialPiecePositions.push({ x: 2, y: 7, image: WhiteBishop });
+initialPiecePositions.push({ x: 3, y: 7, image: WhiteQueen });
+initialPiecePositions.push({ x: 4, y: 7, image: WhiteKing });
+initialPiecePositions.push({ x: 5, y: 7, image: WhiteBishop });
+initialPiecePositions.push({ x: 6, y: 7, image: WhiteKnight });
+initialPiecePositions.push({ x: 7, y: 7, image: WhiteRook });
 
 const Board = () => {
-  const [ piecePositions, setPiecePositions ] = useState<Piece[]>(initialPiecePositions);
+  const previousPiecePositions = localStorage.getItem('piecePositions')
+  const initialPiecePositionsState = previousPiecePositions ? JSON.parse(previousPiecePositions) : initialPiecePositions;
+
+  const [ piecePositions, setPiecePositions ] = useState<Piece[]>(initialPiecePositionsState);
   const [ activePiece, setActivePiece ] = useState<HTMLDivElement | null>(null);
   const [ fromX, setFromX ] = useState<number | null>(null);
   const [ fromY, setFromY ] = useState<number | null>(null);
@@ -176,31 +173,39 @@ const Board = () => {
     setFromImage(null);
   }
 
+  const resetBoard = () => {
+    localStorage.clear();
+    setPiecePositions(initialPiecePositions);
+  }
+
   return (
-    <div
-      onMouseDown={e => grabPiece(e)}
-      onMouseMove={e => movePiece(e)}
-      onMouseUp={e => dropPiece(e)}
-      ref={boardRef}
-      className="board"
-    >
-      {
-        yAxisPositionsReversed.map((yAxisPosition: string) => {
-          return xAxisPositions.map((xAxisPosition: string) => {
-            const xPosition = xAxisPositions.findIndex(position => position === xAxisPosition);
-            const yPosition = yAxisPositions.findIndex(position => position === yAxisPosition);
-            const piece = piecePositions.find(piece => piece.x === xPosition && piece.y === yPosition);
-            return (
-              <Tile
-                key={`${xAxisPosition}${yAxisPosition}`}
-                xAxisPosition={xPosition}
-                yAxisPosition={yPosition}
-                image={piece && piece.image}
-              />
-            );
-          });
-        })
-      }
+    <div className="flex-column">
+      <button onClick={resetBoard}>Reset Board</button>
+      <div
+        onMouseDown={e => grabPiece(e)}
+        onMouseMove={e => movePiece(e)}
+        onMouseUp={e => dropPiece(e)}
+        ref={boardRef}
+        className="board"
+      >
+        {
+          yAxisPositionsReversed.map((yAxisPosition: string) => {
+            return xAxisPositions.map((xAxisPosition: string) => {
+              const xPosition = xAxisPositions.findIndex(position => position === xAxisPosition);
+              const yPosition = yAxisPositions.findIndex(position => position === yAxisPosition);
+              const piece = piecePositions.find(piece => piece.x === xPosition && piece.y === yPosition);
+              return (
+                <Tile
+                  key={`${xAxisPosition}${yAxisPosition}`}
+                  xAxisPosition={xPosition}
+                  yAxisPosition={yPosition}
+                  image={piece && piece.image}
+                />
+              );
+            });
+          })
+        }
+      </div>
     </div>
   );
 }
