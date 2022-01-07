@@ -4,8 +4,3 @@ export interface Piece {
   image: string;
 }
 
-export interface Position {
-  x: number;
-  y: number;
-}
-
