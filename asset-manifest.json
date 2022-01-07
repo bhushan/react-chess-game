@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/react-chess-game/static/css/main.13edd90e.css",
+    "main.css": "/react-chess-game/static/css/main.83202a7b.css",
     "main.js": "/react-chess-game/static/js/main.2837ff7d.js",
     "index.html": "/react-chess-game/index.html",
-    "main.13edd90e.css.map": "/react-chess-game/static/css/main.13edd90e.css.map",
+    "main.83202a7b.css.map": "/react-chess-game/static/css/main.83202a7b.css.map",
     "main.2837ff7d.js.map": "/react-chess-game/static/js/main.2837ff7d.js.map"
   },
   "entrypoints": [
-    "static/css/main.13edd90e.css",
+    "static/css/main.83202a7b.css",
     "static/js/main.2837ff7d.js"
   ]
 }
