@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, MouseEvent } from 'react';
+import { useState, useRef, MouseEvent } from 'react';
 import Tile from 'components/Tile';
 
 import type { Piece, Position } from 'components/Board/types';
@@ -50,35 +50,28 @@ initialPiecePositions.push({ x: 7, y: 7, image: WhiteRook });
 
 const Board = () => {
   const [ piecePositions, setPiecePositions ] = useState<Piece[]>(initialPiecePositions);
+  const [ fromX, setFromX ] = useState<number | null>(null);
+  const [ fromY, setFromY ] = useState<number | null>(null);
+  const [ fromImage, setFromImage ] = useState<string | null>(null);
+  const [ activePiece, setActivePiece ] = useState<HTMLDivElement | null>(null);
 
   const boardRef = useRef<HTMLDivElement>(null);
-
-  let activePiece: HTMLDivElement | null = null;
 
   // reversed yAxisPositions to match the actual board in real life
   let yAxisPositionsReversed = yAxisPositions.reverse();
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     movePiece({ x: 0, y: 1 }, { x: 0, y: 2 }, BlackPawn);
-  //     console.log('moved black pawn from (0, 1) to (0, 2)');
-  //   }, 3000);
-  // }, [])
-
-  const movePiece = (from: Position, to: Position, image: string) => {
-    setPiecePositions(old => {
-      const deepCopy = getDeepCopy(old)
-      const index = deepCopy.findIndex((piece: Piece) => piece.x === from.x && piece.y === from.y)
-      deepCopy.splice(index, 1, { x: to.x, y: to.y, image: image });
-
-      return [ ...deepCopy ];
-    });
-  }
-
   const grabPiece = (e: MouseEvent) => {
     const element = e.target as HTMLDivElement;
-    if (element.classList.contains('piece')) {
-      activePiece = element;
+    if (element.classList.contains('piece') && boardRef.current) {
+      const fromX = Math.floor((e.clientX - boardRef.current.offsetLeft) / 80);
+      const fromY = Math.floor((e.clientY - boardRef.current.offsetTop) / 80);
+      const fromImage = element.style.backgroundImage.slice(4, -1).replace(/"/g, "");
+
+      setFromX(fromX);
+      setFromY(fromY);
+      setFromImage(fromImage);
+
+      setActivePiece(element);
     }
   }
 
@@ -122,10 +115,43 @@ const Board = () => {
   }
 
   const dropPiece = (e: MouseEvent) => {
-    if (activePiece) {
-      console.log('dropped')
-      activePiece = null;
+    if (!activePiece || !boardRef.current) {
+      return
     }
+
+    const toX = Math.floor((e.clientX - boardRef.current.offsetLeft) / 80);
+    const toY = Math.floor((e.clientY - boardRef.current.offsetTop) / 80);
+
+    if (fromX !== null && fromY !== null && fromImage !== null) {
+      movePiece({ x: fromX, y: fromY }, { x: toX, y: toY }, fromImage);
+
+      setActivePiece(null);
+      setFromX(null)
+      setFromY(null)
+      setFromImage(null);
+    }
+  }
+
+  const movePiece = (from: Position, to: Position, image: string) => {
+    setPiecePositions(prevState => {
+      const deepCopyOfPrevState = getDeepCopy(prevState)
+      const fromIndex = deepCopyOfPrevState.findIndex((piece: Piece) => piece.x === from.x && piece.y === from.y)
+      const toIndex = deepCopyOfPrevState.findIndex((piece: Piece) => piece.x === to.x && piece.y === to.y);
+
+      if (toIndex === -1) {
+        // empty tile so move the piece directly
+        deepCopyOfPrevState.splice(fromIndex, 1, { x: to.x, y: to.y, image: image });
+
+        return [ ...deepCopyOfPrevState ];
+      }
+
+      // not empty tile so remove the existing piece to make it empty
+      deepCopyOfPrevState.splice(fromIndex, 1);
+      // now empty tile so move the new piece to the empty tile
+      deepCopyOfPrevState.splice(toIndex, 1, { x: to.x, y: to.y, image: image });
+
+      return [ ...deepCopyOfPrevState ];
+    });
   }
 
   return (
